@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClimaStrategy 🌦️</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🌦️ ClimaStrategy</h1>
+    <p>Selecione uma atividade e uma cidade para verificar o clima.</p>
+  </header>
+
+  <main>
+    <form id="form-busca">
+      <div class="form-group">
+        <label for="atividade">Atividade:</label>
+        <select id="select-atividade" required>
+          <option value="">Carregando atividades...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="input-cidade" placeholder="Ex: São Paulo" required>
+      </div>
+      <button type="submit" id="btn-verificar">
+        Verificar e Salvar Card
+      </button>
+    </form>
+
+    <hr>
+
+    <h2>Dashboard de Cards</h2>
+    <div id="loading-message">Carregando cards salvos...</div>
+    <div id="dashboard-container">
+      </div>
+  </main>
+
+  <script src="script.js"></script>
+  <div id="modal-overlay" class="modal-overlay">
+    <div id="modal-content" class="modal-content">
+      <button id="modal-close" class="modal-close">&times;</button>
+      <h2>Previsão Futura</h2>
+      <h3 id="modal-titulo">...</h3>
+      <div id="modal-body">
+        <p>Carregando previsão...</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

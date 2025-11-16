@@ -1,0 +1,254 @@
+/* Reset Básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background-color: #fff;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  color: #0056b3;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Formulário */
+#form-busca {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.form-group {
+  flex: 1 1 200px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+#form-busca button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  height: 42px; /* Alinha com os inputs */
+}
+
+#form-busca button:hover {
+  background-color: #0056b3;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 30px 0;
+}
+
+/* Dashboard */
+h2 {
+  margin-bottom: 15px;
+}
+
+#dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Estilo do Card */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-header h3 {
+  color: #0056b3;
+  font-size: 1.3em;
+}
+
+.card-header .atividade {
+  font-style: italic;
+  color: #555;
+}
+
+.card-condicao {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* Cores da Condição */
+.card-condicao.apropriado {
+  background-color: #e6f7ec; /* Verde claro */
+  color: #006400; /* Verde escuro */
+}
+
+.card-condicao.inapropriado {
+  background-color: #fff0f0; /* Vermelho claro */
+  color: #a60000; /* Vermelho escuro */
+}
+
+.card-info {
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.card-info li {
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.card-info li strong {
+  color: #111;
+}
+
+/* Botões de Ação */
+.card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.card-actions button {
+  flex: 1;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-atualizar {
+  background-color: #ffc107;
+  color: #333;
+}
+.btn-atualizar:hover { background-color: #e0a800; }
+
+.btn-excluir {
+  background-color: #dc3545;
+  color: white;
+}
+.btn-excluir:hover { background-color: #c82333; }
+
+/* ... (todos os seus estilos anteriores) ... */
+
+/* === ESTILOS DO MODAL === */
+
+.modal-overlay {
+  position: fixed; /* Cobre a tela inteira */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: none; /* Começa escondido */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 101;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  max-height: 80vh; /* Altura máxima */
+  overflow-y: auto; /* Scroll se o conteúdo for grande */
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2em;
+  color: #aaa;
+  cursor: pointer;
+}
+.modal-close:hover {
+  color: #333;
+}
+
+#modal-titulo {
+  margin-bottom: 20px;
+  color: #0056b3;
+}
+
+#modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Estilo para cada dia da previsão no modal */
+.previsao-dia {
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.previsao-dia h4 {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}

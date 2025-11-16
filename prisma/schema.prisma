@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo para guardar os tipos de atividades disponíveis
+model Atividade {
+  id    String @id @default(cuid())
+  nome  String @unique // "Correr", "Praia", "Piquenique"
+  cards Card[] // Relação: Uma atividade pode estar em muitos cards
+}
+
+// Modelo para o Dashboard de Cards salvos
+model Card {
+  id        String  @id @default(cuid())
+  cidade    String
+  
+  // Dados do clima no momento do salvamento/atualização
+  temperatura             Float
+  umidade                 Float
+  velocidadeVento         Float
+  precipitacaoProbabilidade Float // O 'pop' da API (ex: 0.5 para 50%)
+  condicaoAtual           String  // Ex: "Apropriado" ou "Inapropriado"
+
+  // Datas de controle
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação com a Atividade
+  atividade   Atividade @relation(fields: [atividadeId], references: [id])
+  atividadeId String
+}
+
+// Modelo para o log de operações (CRUDH)
+model Historico {
+  id         String   @id @default(cuid())
+  operacao   String // "CREATE", "UPDATE", "DELETE"
+  entidade   String // "CARD"
+  entidadeId String // O ID do Card que foi afetado
+  timestamp  DateTime @default(now())
+}
