@@ -1,0 +1,74 @@
+=========================================
+ GUIA RÁPIDO: COMO RODAR O PROJETO "ClimaStrategy"
+=========================================
+
+Este guia assume que você já clonou o repositório (`git clone ...`)
+e possui o Node.js (v18+) e o npm instalados em sua máquina.
+
+---
+### PASSO 1: CONFIGURAR O BACKEND (API)
+---
+
+1. Abra um terminal e navegue até a pasta do projeto:
+   cd climastrategy
+
+2. Instale todas as dependências do Node.js:
+   npm install
+
+3. Crie o arquivo de ambiente (.env):
+   Crie um arquivo chamado `.env` na raiz do projeto (na mesma pasta
+   que o `package.json`).
+
+4. Adicione o seguinte conteúdo ao arquivo `.env`:
+   
+   # URL do Banco de Dados SQLite (será criado automaticamente)
+   DATABASE_URL="file:./dev.db"
+   
+   # API Key pública do OpenWeather (necessária para o projeto)
+   OPENWEATHER_API_KEY="0565bd65834ef38169ab1ce2bfe1485d"
+
+5. Configure o Banco de Dados (SQLite) com o Prisma:
+   Este comando irá criar o arquivo do banco (`dev.db`), aplicar
+   todas as migrações e rodar o script de "seed" para popular
+   as atividades (Correr, Praia, Piquenique).
+
+   npx prisma migrate dev
+
+   (Se o seed não rodar automaticamente, execute: npx prisma db seed)
+
+6. Inicie o servidor do Backend:
+   npm run dev
+
+   > O terminal deve exibir:
+   > ⚡️ Servidor ClimaStrategy rodando em http://localhost:3000
+   
+   **IMPORTANTE: Deixe este terminal rodando!**
+
+---
+### PASSO 2: ABRIR O FRONTEND (DASHBOARD)
+---
+
+O frontend é composto apenas de arquivos estáticos (HTML/CSS/JS)
+e não precisa de um servidor separado.
+
+1. Com o servidor (backend) rodando no terminal, abra seu
+   navegador de internet (Chrome, Firefox, etc.).
+
+2. No seu explorador de arquivos (Windows Explorer, Finder, etc.),
+   navegue até a pasta do projeto.
+
+3. Entre na pasta `public`.
+
+4. Abra o arquivo `index.html` diretamente no navegador
+   (clique duas vezes nele ou arraste-o para a janela do navegador).
+
+---
+### VALIDAÇÃO
+---
+
+Se tudo deu certo:
+1. O backend estará rodando no terminal (localhost:3000).
+2. O frontend (`index.html`) carregará no navegador.
+3. O menu dropdown "Atividade" no site será preenchido
+   automaticamente com "Correr", "Praia" e "Piquenique",
+   confirmando a conexão com o backend.
