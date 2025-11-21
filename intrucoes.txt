@@ -51,16 +51,9 @@ e possui o Node.js (v18+) e o npm instalados em sua máquina.
 O frontend é composto apenas de arquivos estáticos (HTML/CSS/JS)
 e não precisa de um servidor separado.
 
-1. Com o servidor (backend) rodando no terminal, abra seu
-   navegador de internet (Chrome, Firefox, etc.).
+Clique com o botão direito no index.html.
 
-2. No seu explorador de arquivos (Windows Explorer, Finder, etc.),
-   navegue até a pasta do projeto.
-
-3. Entre na pasta `public`.
-
-4. Abra o arquivo `index.html` diretamente no navegador
-   (clique duas vezes nele ou arraste-o para a janela do navegador).
+Escolha "Open with Live Server".
 
 ---
 ### VALIDAÇÃO
