@@ -1,27 +1,47 @@
+/* =========================================
+   STYLE.CSS - TEMA iOS
+   ========================================= */
+
 /* Reset Básico */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: #f0f2f5;
-  color: #333;
-  line-height: 1.6;
+  /* Gradiente "Vibrant Ocean" - Garante contraste do topo ao fim */
+  background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+  background-attachment: fixed; /* O fundo fica fixo ao rolar a tela */
+  color: #fff;
+  min-height: 100vh;
+  padding-bottom: 50px;
 }
 
+/* === HEADER === */
 header {
-  background-color: #fff;
-  padding: 20px;
+  background-color: transparent; 
+  padding: 40px 20px 20px;
   text-align: center;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 20px;
+  border: none;
 }
 
 header h1 {
-  color: #0056b3;
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  margin-bottom: 10px;
+}
+
+header p {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.1rem;
+  font-weight: 500;
+
+  letter-spacing: 0.5px; /* Espaça levemente as letras */
+  margin-top: 5px;       /* Afasta um pouco do título */
 }
 
 main {
@@ -30,16 +50,34 @@ main {
   padding: 20px;
 }
 
-/* Formulário */
+/* === FORMULÁRIO (Efeito Cristal) === */
 #form-busca {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  /* Gradiente diagonal: Branco forte -> Branco transparente */
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.4) 0%, 
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  
+  backdrop-filter: blur(20px); 
+  -webkit-backdrop-filter: blur(20px);
+  
+  /* Bordas iluminadas para efeito 3D */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  border-left: 1px solid rgba(255, 255, 255, 0.7);
+  
+  border-radius: 20px;
+  padding: 25px;
+  
+  /* Sombra suave para flutuar */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   align-items: flex-end;
+  margin-bottom: 40px;
 }
 
 .form-group {
@@ -48,207 +86,320 @@ main {
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  letter-spacing: 0.5px;
 }
 
+/* Inputs (Estilo vidro) */
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 12px;
+  
+  
+  /* Branco translúcido */
+  background: rgba(255, 255, 255, 0.2); 
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  
+  color: #fff;
   font-size: 1em;
+  outline: none;
+  transition: 0.3s;
+  
+  /* Sombra interna sutil */
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); 
+  
 }
 
+.form-group input::placeholder { color: rgba(255, 255, 255, 0.7); }
+.form-group select { color: #fff; cursor: pointer; }
+
+/* Correção para as opções do select ficarem legíveis */
+.form-group select option { 
+  background-color: #333; 
+  color: #fff; 
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+/* Botão Principal */
 #form-busca button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
+  padding: 12px 30px;
+  
+  /* Gradiente */
+  background: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%);
+  color: #fff;
+  
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 1em;
-  font-weight: 600;
-  height: 42px; /* Alinha com os inputs */
+  font-size: 1.1em;
+  font-weight: 700;
+  height: 48px; 
+  transition: all 0.3s ease;
+  
+  /* Sombra azulada */
+  box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+  
+  /* Borda sutil para definição */
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 #form-busca button:hover {
-  background-color: #0056b3;
+  transform: translateY(-2px);
+  /* Aumenta o brilho no hover */
+  box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+  filter: brightness(1.1);
 }
 
+/* Linha divisória */
 hr {
   border: 0;
   height: 1px;
-  background-color: #e0e0e0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
   margin: 30px 0;
 }
 
-/* Dashboard */
+/* === DASHBOARD === */
 h2 {
-  margin-bottom: 15px;
+  margin-bottom: 25px;
+  font-weight: 600; 
+  font-size: 1.8rem; 
+  color: #fff; /* Branco puro */
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2); /* Sombra para ler bem no azul */
+  text-transform: none; 
+  letter-spacing: normal; 
 }
 
 #dashboard-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  gap: 25px;
 }
 
-/* Estilo do Card */
+#loading-message {
+  text-align: center;
+  font-style: italic;
+  opacity: 0.8;
+  grid-column: 1 / -1;
+}
+
+/* === CARD (Efeito Cristal Individual) === */
 .card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  transition: transform 0.2s ease;
+  /* Mesmo gradiente do form */
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.4) 0%, 
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  
+  /* Bordas iluminadas */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  border-left: 1px solid rgba(255, 255, 255, 0.7);
+
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .card-header h3 {
-  color: #0056b3;
-  font-size: 1.3em;
+  color: #fff;
+  font-size: 1.5em;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .card-header .atividade {
-  font-style: italic;
-  color: #555;
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
 }
 
+/* Tags de Condição */
 .card-condicao {
   font-size: 1.1em;
-  font-weight: 600;
-  margin-bottom: 20px;
-  padding: 10px;
-  border-radius: 4px;
+  font-weight: 700;
+  margin: 15px 0 20px;
+  padding: 8px 15px;
+  border-radius: 50px;
+  display: inline-block;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* Cores da Condição */
 .card-condicao.apropriado {
-  background-color: #e6f7ec; /* Verde claro */
-  color: #006400; /* Verde escuro */
+  background-color: rgba(46, 213, 115, 0.4); /* Verde vidro */
+  color: #fff;
+  border: 1px solid rgba(46, 213, 115, 0.6);
 }
 
 .card-condicao.inapropriado {
-  background-color: #fff0f0; /* Vermelho claro */
-  color: #a60000; /* Vermelho escuro */
+  background-color: rgba(255, 71, 87, 0.4); /* Vermelho vidro */
+  color: #fff;
+  border: 1px solid rgba(255, 71, 87, 0.6);
 }
 
-.card-info {
-  list-style: none;
-  margin-bottom: 20px;
-}
-
+/* Informações */
 .card-info li {
-  margin-bottom: 8px;
-  color: #444;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95em;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 5px;
 }
 
 .card-info li strong {
-  color: #111;
+  color: #fff;
+  font-weight: 600;
 }
 
-/* Botões de Ação */
+/* Botões do Card */
 .card-actions {
+  margin-top: 20px;
   display: flex;
   gap: 10px;
 }
 
+/* === BOTÕES DO CARD (Estilo Vidro Neutro) === */
+
 .card-actions button {
   flex: 1;
-  padding: 8px 10px;
-  border: none;
-  border-radius: 4px;
+  padding: 10px;
+  
+  /* Fundo NEUTRO: Branco com 20% de opacidade */
+  background: rgba(255, 255, 255, 0.2);
+  
+  /* Borda leve para definir o formato */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  
+  /* Sombra no texto para garantir leitura no fundo azul */
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  
+  transition: all 0.3s ease;
 }
 
-.btn-atualizar {
-  background-color: #ffc107;
-  color: #333;
+/* === INTERAÇÃO === */
+
+/* Hover Atualizar: Vira Amarelo */
+.btn-atualizar:hover {
+  background-color: #f1c40f; 
+  border-color: #f1c40f;
+  box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
+  transform: translateY(-2px);
+  text-shadow: none; /* Tira a sombra do texto para ficar clean */
 }
-.btn-atualizar:hover { background-color: #e0a800; }
 
-.btn-excluir {
-  background-color: #dc3545;
-  color: white;
+/* Hover Excluir: Vira Vermelho */
+.btn-excluir:hover {
+  background-color: #ff6b6b;
+  border-color: #ff6b6b;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  transform: translateY(-2px);
+  text-shadow: none;
 }
-.btn-excluir:hover { background-color: #c82333; }
 
-/* ... (todos os seus estilos anteriores) ... */
-
-/* === ESTILOS DO MODAL === */
-
+/* === MODAL === */
 .modal-overlay {
-  position: fixed; /* Cobre a tela inteira */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   z-index: 100;
-  display: none; /* Começa escondido */
-  justify-content: center;
-  align-items: center;
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  justify-content: center; align-items: center;
 }
 
 .modal-content {
-  background-color: #fff;
+  /* Vidro Escuro para contraste */
+  background: rgba(20, 30, 48, 0.85); 
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
   padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  z-index: 101;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   width: 90%;
-  max-width: 600px;
+  max-width: 500px;
   position: relative;
-  max-height: 80vh; /* Altura máxima */
-  overflow-y: auto; /* Scroll se o conteúdo for grande */
+  max-height: 85vh;
+  overflow-y: auto;
 }
+
+/* Scrollbar do modal */
+.modal-content::-webkit-scrollbar { width: 8px; }
+.modal-content::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+.modal-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 
 .modal-close {
+  color: #fff;
+  opacity: 0.6;
   position: absolute;
-  top: 10px;
-  right: 15px;
+  top: 15px;
+  right: 20px;
   background: none;
   border: none;
-  font-size: 2em;
-  color: #aaa;
+  font-size: 2rem;
   cursor: pointer;
+  transition: opacity 0.2s;
 }
-.modal-close:hover {
-  color: #333;
-}
+.modal-close:hover { opacity: 1; }
 
 #modal-titulo {
-  margin-bottom: 20px;
-  color: #0056b3;
+  color: #fff;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 15px;
 }
 
-#modal-body {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* Estilo para cada dia da previsão no modal */
+/* Itens do Modal */
 .previsao-dia {
-  border: 1px solid #eee;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 15px;
-  border-radius: 6px;
+  border-radius: 15px;
+  margin-bottom: 12px;
 }
 
 .previsao-dia h4 {
+  color: #80D0C7; /* Combina com o tema */
+  margin-bottom: 5px;
   font-size: 1.1em;
-  margin-bottom: 10px;
 }
