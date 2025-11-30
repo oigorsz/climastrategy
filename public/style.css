@@ -315,26 +315,6 @@ h2 {
   transition: all 0.3s ease;
 }
 
-/* === INTERAÇÃO === */
-
-/* Hover Atualizar: Vira Amarelo */
-.btn-atualizar:hover {
-  background-color: #f1c40f; 
-  border-color: #f1c40f;
-  box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
-  transform: translateY(-2px);
-  text-shadow: none; /* Tira a sombra do texto para ficar clean */
-}
-
-/* Hover Excluir: Vira Vermelho */
-.btn-excluir:hover {
-  background-color: #ff6b6b;
-  border-color: #ff6b6b;
-  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-  transform: translateY(-2px);
-  text-shadow: none;
-}
-
 /* === MODAL === */
 .modal-overlay {
   background-color: rgba(0, 0, 0, 0.6);
@@ -402,4 +382,86 @@ h2 {
   color: #80D0C7; /* Combina com o tema */
   margin-bottom: 5px;
   font-size: 1.1em;
+}
+
+.icone-clima-img {
+    width: 55px;
+    height: 55px;
+    position: absolute;
+    top: 25px;    
+    right: 25px;  
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+    transition: transform 0.3s ease;
+    z-index: 10; 
+}
+
+.card:hover .icone-clima-img {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.card.clima-sol, .card.clima-chuva, .card.clima-frio {
+    border: none !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+    color: white !important; 
+}
+
+.card.clima-sol {
+    background: linear-gradient(180deg, 
+        #56CCF2 0%,   
+        #2F80ED 100%  
+    ) !important;
+}
+
+.card.clima-sol button {
+    background: rgba(255,255,255,0.2) !important;
+    color: white !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+}
+
+.card.clima-chuva {
+    background: linear-gradient(180deg, 
+        #4b5b6a 0%,   
+        #2c3e50 100%  
+    ) !important;
+}
+
+.card.clima-frio {
+    background: linear-gradient(180deg,
+        #67a1c2  0%,   
+        #6891a7 100%  
+    ) !important;
+}
+
+.card.clima-frio h3, .card.clima-frio span, .card.clima-frio li, .card.clima-frio strong {
+    color: #1a2a3a !important; 
+    text-shadow: none !important;
+}
+
+.card.clima-frio button {
+    border: 1px solid rgba(26, 42, 58, 0.2) !important;
+    color: #1a2a3a !important;
+    background: rgba(255,255,255,0.15) !important;
+}
+.card.clima-frio button:hover {
+    background: #1a2a3a !important;
+    color: white !important;
+}
+
+.card.clima-sol button, 
+.card.clima-chuva button, 
+.card.clima-frio button {
+    background: rgba(255, 255, 255, 0.15) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.4) !important; 
+    color: white !important;
+    box-shadow: none !important; 
+    text-shadow: none !important;
+}
+
+.card.clima-sol button:hover, 
+.card.clima-chuva button:hover, 
+.card.clima-frio button:hover {
+    background: white !important;
+    color: #333 !important; 
+    border-color: white !important;
+    transform: translateY(-2px); 
 }
