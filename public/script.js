@@ -4,6 +4,7 @@ const API_URL = 'http://localhost:3000';
 // Elementos do DOM
 let formBusca, selectAtividade, inputCidade, dashboardContainer, loadingMessage;
 let modalOverlay, modalContent, modalCloseBtn, modalTitulo, modalBody;
+let modalErro, modalContentErro, modalTituloErro, modalErroMensagem, modalErroFecharBtn;
 
 document.addEventListener('DOMContentLoaded', () => {
   formBusca = document.getElementById('form-busca');
@@ -16,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
   modalCloseBtn = document.getElementById('modal-close');
   modalTitulo = document.getElementById('modal-titulo');
   modalBody = document.getElementById('modal-body');
+  modalErro = document.getElementById("modal-erro");
+  modalContentErro = document.getElementById('modal-content-erro');
+  modalTituloErro = document.getElementById('modal-erro-titulo');
+  modalErroMensagem = document.getElementById("modal-erro-mensagem");
+  modalErroFecharBtn = document.getElementById("modal-erro-close");
 
   carregarAtividades();
   carregarCards();
@@ -26,6 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalOverlay) {
     modalOverlay.addEventListener('click', (e) => {
       if (e.target === modalOverlay) fecharModal();
+    });
+  }
+
+  // Fechar Modal Erro
+  if (modalErroFecharBtn) modalErroFecharBtn.addEventListener('click', fecharErroModal);
+  if (modalErro) {
+    modalErro.addEventListener("click", (e) => {
+      if (e.target === modalErro) fecharErroModal();
     });
   }
 });
@@ -97,7 +111,7 @@ async function handleCriarCard(e) {
     inputCidade.value = '';
     carregarCards();
   } catch (error) {
-    alert(`Erro: ${error.message}`);
+    mostrarErroModal(inputCidade.value);
   } finally {
     btn.textContent = textoOriginal;
     btn.disabled = false;
@@ -261,4 +275,14 @@ async function handleAbrirModal(id, cidade, atividadeNome) {
 
 function fecharModal() {
   modalOverlay.style.display = 'none';
+}
+
+function mostrarErroModal(cidadeBuscada) {
+  modalErro.style.display = "flex";
+  modalTituloErro.textContent = "Cidade Não Localizada";
+  modalErroMensagem.textContent = `Não encontramos resultados para “${cidadeBuscada}”. Verifique se o nome está correto e tente novamente.`;
+}
+
+function fecharErroModal() {
+  modalErro.style.display = "none";
 }
