@@ -10,7 +10,7 @@
 
   <header>
     <h1>🌦️ ClimaStrategy</h1>
-    <p>Selecione uma atividade e uma cidade para verificar o clima.</p>
+    <p>Planeje seu dia encontrando o momento perfeito para a sua atividade.<br>Com ClimaStrategy, você sabe a atividade ideal para o clima certo!</p>
   </header>
 
   <main>
@@ -26,13 +26,13 @@
         <input type="text" id="input-cidade" placeholder="Ex: São Paulo" required>
       </div>
       <button type="submit" id="btn-verificar">
-        Verificar e Salvar Card
+        Consultar
       </button>
     </form>
 
     <hr>
 
-    <h2>Dashboard de Cards</h2>
+    <h2>Painel de Consultas</h2>
     <div id="loading-message">Carregando cards salvos...</div>
     <div id="dashboard-container">
       </div>
@@ -47,6 +47,15 @@
       <div id="modal-body">
         <p>Carregando previsão...</p>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal de Erro -->
+  <div id="modal-erro" class="modal-erro" style="display: none;">
+    <div id="modal-content-erro" class="modal-content-erro">
+        <button id="modal-erro-close" class="modal-erro-close">&times;</button>
+        <h2 id="modal-erro-titulo">Erro</h2>
+        <p id="modal-erro-mensagem"></p>
     </div>
   </div>
 </body>

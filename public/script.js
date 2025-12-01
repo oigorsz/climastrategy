@@ -1,18 +1,12 @@
-// URL base da nossa API
+// Configuração da API
 const API_URL = 'http://localhost:3000';
 
-// --- DEIXE ESTAS VARIÁVEIS 'let' AQUI FORA (VAZIAS) ---
-// Vamos preenchê-las quando o DOM estiver pronto
+// Elementos do DOM
 let formBusca, selectAtividade, inputCidade, dashboardContainer, loadingMessage;
 let modalOverlay, modalContent, modalCloseBtn, modalTitulo, modalBody;
+let modalErro, modalContentErro, modalTituloErro, modalErroMensagem, modalErroFecharBtn;
 
-/**
- * Função principal que inicializa o app
- */
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // --- PREENCHA AS VARIÁVEIS AQUI DENTRO ---
-  // Agora temos certeza que o HTML existe
   formBusca = document.getElementById('form-busca');
   selectAtividade = document.getElementById('select-atividade');
   inputCidade = document.getElementById('input-cidade');
@@ -23,200 +17,177 @@ document.addEventListener('DOMContentLoaded', () => {
   modalCloseBtn = document.getElementById('modal-close');
   modalTitulo = document.getElementById('modal-titulo');
   modalBody = document.getElementById('modal-body');
+  modalErro = document.getElementById("modal-erro");
+  modalContentErro = document.getElementById('modal-content-erro');
+  modalTituloErro = document.getElementById('modal-erro-titulo');
+  modalErroMensagem = document.getElementById("modal-erro-mensagem");
+  modalErroFecharBtn = document.getElementById("modal-erro-close");
 
-  // 1. Carrega as atividades no <select>
   carregarAtividades();
-
-  // 2. Carrega os cards salvos
   carregarCards();
 
-  // 3. Adiciona o listener para o formulário
-  // (Verifica se o form existe antes de adicionar, boa prática)
-  if (formBusca) {
-    formBusca.addEventListener('submit', handleCriarCard);
-  }
+  if (formBusca) formBusca.addEventListener('submit', handleCriarCard);
   
-  // 4. Adiciona listeners para fechar o modal
-  if (modalCloseBtn) {
-    modalCloseBtn.addEventListener('click', fecharModal);
-  }
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', fecharModal);
   if (modalOverlay) {
-    modalOverlay.addEventListener('click', (event) => {
-      // Fecha se clicar FORA do conteúdo (no overlay)
-      if (event.target === modalOverlay) {
-        fecharModal();
-      }
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) fecharModal();
+    });
+  }
+
+  // Fechar Modal Erro
+  if (modalErroFecharBtn) modalErroFecharBtn.addEventListener('click', fecharErroModal);
+  if (modalErro) {
+    modalErro.addEventListener("click", (e) => {
+      if (e.target === modalErro) fecharErroModal();
     });
   }
 });
 
-/**
- * Busca atividades da API e popula o <select>
- */
+// Carrega as opções do dropdown
 async function carregarAtividades() {
   try {
-    const response = await fetch(`${API_URL}/atividades`);
-    if (!response.ok) {
-      throw new Error('Não foi possível carregar as atividades.');
-    }
-    const atividades = await response.json();
-
-    selectAtividade.innerHTML = ''; // Limpa o "Carregando..."
-    atividades.forEach(atividade => {
+    const res = await fetch(`${API_URL}/atividades`);
+    const atividades = await res.json();
+    
+    selectAtividade.innerHTML = ''; 
+    atividades.forEach(ativ => {
       const option = document.createElement('option');
-      option.value = atividade.id;
-      option.textContent = atividade.nome;
+      option.value = ativ.id;
+      option.textContent = ativ.nome;
       selectAtividade.appendChild(option);
     });
   } catch (error) {
-    console.error('Erro ao carregar atividades:', error);
+    console.error(error);
     selectAtividade.innerHTML = '<option value="">Erro ao carregar</option>';
   }
 }
 
-/**
- * [READ] Busca todos os cards da API e os renderiza
- */
+// Carrega os cards na tela
 async function carregarCards() {
   try {
     loadingMessage.style.display = 'block';
-    dashboardContainer.innerHTML = ''; // Limpa o container
-
-    const response = await fetch(`${API_URL}/cards`);
-    if (!response.ok) {
-      throw new Error('Não foi possível carregar os cards.');
-    }
-    const cards = await response.json();
-
+    dashboardContainer.innerHTML = '';
+    const res = await fetch(`${API_URL}/cards`);
+    const cards = await res.json();
+    
     loadingMessage.style.display = 'none';
 
     if (cards.length === 0) {
-      dashboardContainer.innerHTML = '<p>Nenhum card salvo ainda.</p>';
+      dashboardContainer.innerHTML = '<p style="color: #fff; grid-column: 1/-1; text-align: center;">Nenhum card salvo ainda.</p>';
       return;
     }
-
     cards.forEach(card => {
       const cardElement = criarElementoCard(card);
       dashboardContainer.appendChild(cardElement);
     });
   } catch (error) {
-    console.error('Erro ao carregar cards:', error);
-    loadingMessage.textContent = 'Erro ao carregar os cards.';
+    loadingMessage.textContent = 'Erro de conexão.';
   }
 }
 
-/**
- * [CREATE] Lida com o submit do formulário para criar um novo card
- */
-async function handleCriarCard(event) {
-  event.preventDefault(); // Impede o recarregamento da página
-
+// Cria um novo card
+async function handleCriarCard(e) {
+  e.preventDefault();
   const atividadeId = selectAtividade.value;
   const cidade = inputCidade.value.trim();
 
-  if (!atividadeId || !cidade) {
-    alert('Por favor, preencha todos os campos.');
-    return;
-  }
+  if (!atividadeId || !cidade) return alert('Preencha todos os campos.');
 
-  const btn = event.target.querySelector('button');
-  btn.textContent = 'Verificando...';
+  const btn = e.target.querySelector('button');
+  const textoOriginal = btn.textContent;
+  btn.textContent = 'Consultando...';
   btn.disabled = true;
 
   try {
-    const response = await fetch(`${API_URL}/cards`, {
+    const res = await fetch(`${API_URL}/cards`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ cidade, atividadeId }),
     });
 
-    if (!response.ok) {
-      const erro = await response.json();
-      throw new Error(erro.message || 'Erro ao criar o card.');
-    }
-
-    // Sucesso! Limpa o formulário e recarrega a lista
+    if (!res.ok) throw new Error('Erro ao criar.');
+    
     inputCidade.value = '';
-    carregarCards(); // Recarrega o dashboard
+    carregarCards();
   } catch (error) {
-    console.error('Erro ao criar card:', error);
-    alert(`Erro ao criar card: ${error.message}`);
+    mostrarErroModal(inputCidade.value);
   } finally {
-    btn.textContent = 'Verificar e Salvar Card';
+    btn.textContent = textoOriginal;
     btn.disabled = false;
   }
 }
 
-/**
- * [DELETE] Lida com o clique no botão de excluir
- */
+// Deletar Card
 async function handleExcluirCard(id) {
-  if (!confirm('Tem certeza que deseja excluir este card?')) {
-    return;
-  }
-
+  if (!confirm('Excluir este card?')) return;
   try {
-    const response = await fetch(`${API_URL}/cards/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error('Falha ao excluir o card.');
-    }
-
-    // Remove o card do DOM sem precisar recarregar tudo
-    const cardElement = document.getElementById(`card-${id}`);
-    if (cardElement) {
-      cardElement.remove();
-    }
-  } catch (error) {
-    console.error('Erro ao excluir card:', error);
-    alert('Não foi possível excluir o card.');
-  }
-}
-
-/**
- * [UPDATE] Lida com o clique no botão de atualizar
- */
-async function handleAtualizarCard(id, btnElement) {
-  btnElement.textContent = 'Atualizando...';
-  btnElement.disabled = true;
-
-  try {
-    const response = await fetch(`${API_URL}/cards/${id}`, {
-      method: 'PUT',
-    });
-
-    if (!response.ok) {
-      throw new Error('Falha ao atualizar o card.');
-    }
-
-    // Sucesso, recarrega o dashboard para mostrar os novos dados
+    await fetch(`${API_URL}/cards/${id}`, { method: 'DELETE' });
     carregarCards();
-
-  } catch (error) {
-    console.error('Erro ao atualizar card:', error);
-    alert('Não foi possível atualizar o card.');
-  } 
+  } catch (error) { alert('Erro ao excluir.'); }
 }
 
-/**
- * Função helper para criar o HTML de um card
- */
+// Atualizar Card
+async function handleAtualizarCard(id, btnElement) {
+  const textoOriginal = btnElement.textContent;
+  btnElement.textContent = '...';
+  try {
+    const res = await fetch(`${API_URL}/cards/${id}`, { method: 'PUT' });
+    if (res.ok) carregarCards();
+  } catch (error) { console.error(error); } 
+  finally { btnElement.textContent = textoOriginal; }
+}
+
+// Define cor e ícone baseado no clima
+function obterVisualClima(card) {
+    const chanceChuva = card.precipitacaoProbabilidade || 0;
+    const temp = card.temperatura || 0;
+
+    if (chanceChuva > 1) {
+      return { 
+          classe: 'clima-chuva', 
+          imagem: 'https://cdn-icons-png.flaticon.com/512/4088/4088981.png' 
+      };
+    }
+    if (temp >= 18) {
+      return { 
+          classe: 'clima-sol', 
+          imagem: 'https://cdn-icons-png.flaticon.com/512/869/869869.png' 
+      };
+    }
+    return { 
+        classe: 'clima-frio', 
+        imagem: 'https://cdn-icons-png.flaticon.com/512/414/414927.png' 
+    };
+}
+
+// Monta o HTML do card
 function criarElementoCard(card) {
   const cardDiv = document.createElement('div');
-  cardDiv.className = 'card';
+  const visual = obterVisualClima(card);
+  
+  cardDiv.className = `card ${visual.classe}`;
   cardDiv.id = `card-${card.id}`;
 
-  const condicaoClasse = card.condicaoAtual === 'Apropriado'
-    ? 'apropriado'
-    : 'inapropriado';
+ // Lógica para aceitar frases positivas
+const texto = card.condicaoAtual;
 
-  // Separamos o corpo (clicável) e as ações
+// Consideramos "Verde" se for Apropriado OU tiver palavras positivas
+const ehBom = texto === 'Apropriado' 
+           || texto.includes('Perfeito') 
+           || texto.includes('Ótimo') 
+           || texto.includes('lindo') 
+           || texto.includes('Aproveite');
+
+const condicaoClasse = ehBom ? 'apropriado' : 'inapropriado';
+
+// FIM MUDANÇA BRUNA
+
   cardDiv.innerHTML = `
-    <div class="card-body"> <div class="card-header">
+    <img src="${visual.imagem}" alt="Ícone Clima" class="icone-clima-img">
+
+    <div class="card-body"> 
+      <div class="card-header">
         <div>
           <h3>${card.cidade}</h3>
           <span class="atividade">${card.atividade.nome}</span>
@@ -226,10 +197,10 @@ function criarElementoCard(card) {
         ${card.condicaoAtual}
       </div>
       <ul class="card-info">
-        <li><strong>Temperatura:</strong> ${card.temperatura.toFixed(1)}°C</li>
-        <li><strong>Umidade:</strong> ${card.umidade.toFixed(0)}%</li>
-        <li><strong>Vento:</strong> ${card.velocidadeVento.toFixed(1)} km/h</li>
-        <li><strong>Chuva:</strong> ${card.precipitacaoProbabilidade.toFixed(0)}%</li>
+        <li><strong>🌡️ Temperatura:</strong> ${card.temperatura.toFixed(1)}°C</li>
+        <li><strong>💧 Umidade:</strong> ${card.umidade.toFixed(0)}%</li>
+        <li><strong>💨 Vento:</strong> ${card.velocidadeVento.toFixed(1)} km/h</li>
+        <li><strong>☔ Chuva:</strong> ${card.precipitacaoProbabilidade.toFixed(0)}%</li>
       </ul>
     </div>
     <div class="card-actions">
@@ -238,24 +209,22 @@ function criarElementoCard(card) {
     </div>
   `;
   
-  // --- Adiciona Event Listeners ---
-
-  // Ações dos Botões (UPDATE e DELETE)
+  // Eventos dos botões
   const btnAtualizar = cardDiv.querySelector('.btn-atualizar');
   btnAtualizar.addEventListener('click', (e) => {
-    e.stopPropagation(); // Impede que o clique no botão abra o modal
+    e.stopPropagation();
     handleAtualizarCard(card.id, btnAtualizar);
   });
 
   const btnExcluir = cardDiv.querySelector('.btn-excluir');
   btnExcluir.addEventListener('click', (e) => {
-    e.stopPropagation(); // Impede que o clique no botão abra o modal
+    e.stopPropagation();
     handleExcluirCard(card.id);
   });
 
-  // Adiciona clique no corpo do card para abrir o modal
+  // Clique no card abre o modal
   const cardBody = cardDiv.querySelector('.card-body');
-  cardBody.style.cursor = 'pointer'; // Indica que é clicável
+  cardBody.style.cursor = 'pointer';
   cardBody.addEventListener('click', () => {
     handleAbrirModal(card.id, card.cidade, card.atividade.nome);
   });
@@ -263,72 +232,69 @@ function criarElementoCard(card) {
   return cardDiv;
 }
 
-/**
- * [MODAL] Abre o modal e busca a previsão futura
- */
+// Abre modal com previsão detalhada
 async function handleAbrirModal(id, cidade, atividadeNome) {
-  // Abre o modal e define o estado de loading
   modalOverlay.style.display = 'flex';
-  modalTitulo.textContent = `Previsão para ${atividadeNome} em ${cidade}`;
-  modalBody.innerHTML = '<p>Carregando previsão...</p>';
+  modalTitulo.textContent = `Previsão: ${atividadeNome} em ${cidade}`;
+  modalBody.innerHTML = '<p style="text-align:center">Carregando previsão...</p>';
 
   try {
-    // Chama nosso novo endpoint de forecast
-    const response = await fetch(`${API_URL}/cards/${id}/forecast`);
-    if (!response.ok) {
-      throw new Error('Falha ao buscar previsão futura.');
-    }
-    const previsoes = await response.json();
+    const res = await fetch(`${API_URL}/cards/${id}/forecast`);
+    const previsoes = await res.json();
 
-    if (previsoes.length === 0) {
-      modalBody.innerHTML = '<p>Não foi possível obter a previsão futura (0 dias retornados).</p>';
+    if (!previsoes || previsoes.length === 0) {
+      modalBody.innerHTML = '<p>Sem dados de previsão futura.</p>';
       return;
     }
 
-    // Limpa o loading
-    modalBody.innerHTML = '';
+    modalBody.innerHTML = ''; 
 
-    // Renderiza cada dia da previsão
     previsoes.forEach(item => {
       const { dadosClima, resultado, data } = item;
+      const div = document.createElement('div');
+      div.className = 'previsao-dia';
       
-      const diaElement = document.createElement('div');
-      diaElement.className = 'previsao-dia';
-      
-      const dataFormatada = new Date(data).toLocaleDateString('pt-BR', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'short',
+      // Formata data: "Domingo, 1 de dezembro"
+      let dataTexto = new Date(data).toLocaleDateString('pt-BR', { 
+          weekday: 'long', day: 'numeric', month: 'long' 
       });
+      dataTexto = dataTexto.charAt(0).toUpperCase() + dataTexto.slice(1);
+
+      const condicaoClasse = resultado.apropriado ? 'apropriado' : 'inapropriado';
+      const textoCondicao = resultado.apropriado ? 'Apropriado' : 'Inapropriado';
       
-      const condicaoClasse = resultado.apropriado
-        ? 'apropriado'
-        : 'inapropriado';
-      
-      // Monta o HTML para o dia
-      diaElement.innerHTML = `
-        <h4>${dataFormatada} (12:00)</h4>
-        <div class="card-condicao ${condicaoClasse}">
-          ${resultado.apropriado ? 'Apropriado' : resultado.justificativa || 'Inapropriado'}
+      div.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="margin:0; font-size: 1.1em; color: #80D0C7;">📅 ${dataTexto}</h4>
+            <span class="card-condicao ${condicaoClasse}" style="margin:0; font-size: 0.8em; padding: 4px 10px;">
+                ${textoCondicao}
+            </span>
         </div>
-        <ul class="card-info">
-          <li><strong>Temp:</strong> ${dadosClima.temperatura.toFixed(1)}°C</li>
-          <li><strong>Chuva:</strong> ${dadosClima.probabilidadeChuva.toFixed(0)}%</li>
-          <li><strong>Vento:</strong> ${dadosClima.velocidadeVento.toFixed(1)} km/h</li>
+
+        <ul class="card-info" style="border:none; padding: 0;">
+          <li><span>🌡️ Temperatura:</span> <strong>${dadosClima.temperatura.toFixed(1)}°C</strong></li>
+          <li><span>☔ Chance de Chuva:</span> <strong>${dadosClima.probabilidadeChuva.toFixed(0)}%</strong></li>
+          <li><span>💨 Vento:</span> <strong>${dadosClima.velocidadeVento.toFixed(1)} km/h</strong></li>
         </ul>
       `;
-      modalBody.appendChild(diaElement);
+      modalBody.appendChild(div);
     });
 
   } catch (error) {
-    console.error('Erro ao abrir modal:', error);
-    modalBody.innerHTML = `<p style="color: red;">${error.message}</p>`;
+    modalBody.innerHTML = `<p style="color: #ff6b6b; text-align:center;">Erro ao carregar.</p>`;
   }
 }
 
-/**
- * [MODAL] Fecha o modal
- */
 function fecharModal() {
   modalOverlay.style.display = 'none';
+}
+
+function mostrarErroModal(cidadeBuscada) {
+  modalErro.style.display = "flex";
+  modalTituloErro.textContent = "Cidade Não Localizada";
+  modalErroMensagem.textContent = `Não encontramos resultados para “${cidadeBuscada}”. Verifique se o nome está correto e tente novamente.`;
+}
+
+function fecharErroModal() {
+  modalErro.style.display = "none";
 }
