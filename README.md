@@ -106,5 +106,3 @@ O backend expõe os seguintes endpoints REST:
 | `GET` | `/cards/:id/forecast` | Retorna a previsão de 5 dias com a análise da estratégia. |
 
 ---
-
-## 📂 Estrutura de Pastas
