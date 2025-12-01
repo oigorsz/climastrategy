@@ -129,24 +129,32 @@ function obterVisualClima(card) {
     const chanceChuva = card.precipitacaoProbabilidade || 0;
     const temp = card.temperatura || 0;
 
-    if (chanceChuva > 1) {
+    if (chanceChuva >= 50) {
       return { 
           classe: 'clima-chuva', 
           imagem: 'https://cdn-icons-png.flaticon.com/512/4088/4088981.png' 
       };
     }
-    if (temp >= 18) {
+
+    if (chanceChuva >= 25) {
+       return {
+          classe: 'clima-frio', 
+          imagem: 'https://cdn-icons-png.flaticon.com/512/414/414927.png' 
+       };
+    }
+
+    if (temp >= 23) {
       return { 
           classe: 'clima-sol', 
           imagem: 'https://cdn-icons-png.flaticon.com/512/869/869869.png' 
       };
     }
+
     return { 
         classe: 'clima-frio', 
         imagem: 'https://cdn-icons-png.flaticon.com/512/414/414927.png' 
     };
 }
-
 // Monta o HTML do card
 function criarElementoCard(card) {
   const cardDiv = document.createElement('div');
