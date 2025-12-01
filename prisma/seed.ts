@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const atividadesData = [
   { nome: 'Correr' },
-  { nome: 'Praia' },
+  { nome: 'Praia/Piscina' },
   { nome: 'Piquenique' },
 ];
 

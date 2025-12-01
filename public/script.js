@@ -182,7 +182,19 @@ function criarElementoCard(card) {
   cardDiv.className = 'card';
   cardDiv.id = `card-${card.id}`;
 
-  const condicaoClasse = card.condicaoAtual === 'Apropriado' ? 'apropriado' : 'inapropriado';
+ // Lógica para aceitar frases positivas
+const texto = card.condicaoAtual;
+
+// Consideramos "Verde" se for Apropriado OU tiver palavras positivas
+const ehBom = texto === 'Apropriado' 
+           || texto.includes('Perfeito') 
+           || texto.includes('Ótimo') 
+           || texto.includes('lindo') 
+           || texto.includes('Aproveite');
+
+const condicaoClasse = ehBom ? 'apropriado' : 'inapropriado';
+
+// FIM MUDANÇA BRUNA
 
   // Ícones adicionados para visual iOS
   cardDiv.innerHTML = `

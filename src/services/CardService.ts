@@ -1,25 +1,19 @@
 import { prisma } from '../prismaClient';
 import { WeatherService } from './WeatherService';
-import { ClimaService } from './ClimaService';
+import { TradutorClima } from '../logica/TradutorClima';
 
-/**
- * Este serviço orquestra toda a lógica de negócio e
- * o acesso a dados para os Cards.
- */
+
 export class CardService {
   private weatherService: WeatherService;
-  private climaService: ClimaService;
+  private tradutorClima: TradutorClima;
 
   constructor() {
-    // Instancia os serviços que criamos na Fase 2
     this.weatherService = new WeatherService();
-    this.climaService = new ClimaService();
+    this.tradutorClima = new TradutorClima();
   }
 
-  /**
-   * CREATE
-   * Cria um novo card, buscando o clima e aplicando a estratégia.
-   */
+  //Cria um novo card, buscando o clima e aplicando a estratégia.
+
   async criarCard(cidade: string, atividadeId: string) {
     // 1. Buscar o nome da atividade no banco
     const atividade = await prisma.atividade.findUnique({
@@ -29,19 +23,36 @@ export class CardService {
       throw new Error('Atividade não encontrada.');
     }
 
-    // 2. Buscar dados do clima (Fase 2)
+    // 2. Buscar dados do clima (API Externa)
     const { dados: dadosClima, nomeCidade } = await this.weatherService.buscarClima(cidade);
 
-    // 3. Aplicar a estratégia (Fase 2)
-    const resultado = this.climaService.verificarClimaParaAtividade(
-      atividade.nome,
-      dadosClima,
-    );
+    // Verificamos se já existe um card igual (mesma cidade e atividade)
+    const cardExistente = await prisma.card.findFirst({
+        where: {
+            cidade: nomeCidade,
+            atividadeId: atividadeId
+        }
+    });
+
+    if (cardExistente) {
+        // Verifica se já tem um card dessa cidade
+        // Se tiver, a gente deleta o antigo para o novo ficar no topo da lista atualizado
+        await prisma.card.delete({
+            where: { id: cardExistente.id }
+        });
+    }
+
+    // Precisamos converter os nomes dos campos para bater com o IEstrategia
+    const fraseResultado = this.tradutorClima.processar(atividade.nome, {
+        temp: dadosClima.temperatura,
+        umidade: dadosClima.umidade,
+        vento: dadosClima.velocidadeVento,
+        chuva: dadosClima.probabilidadeChuva
+    });
 
     // 4. Salvar o Card e o Histórico em uma Transação
-    // Isso garante que ou AMBOS funcionam, ou NENHUM funciona.
     const [cardSalvo] = await prisma.$transaction([
-      // A. Criar o Card
+      // Criar o Card
       prisma.card.create({
         data: {
           cidade: nomeCidade, 
@@ -50,18 +61,16 @@ export class CardService {
           umidade: dadosClima.umidade,
           velocidadeVento: dadosClima.velocidadeVento,
           precipitacaoProbabilidade: dadosClima.probabilidadeChuva,
-          condicaoAtual: resultado.apropriado
-            ? 'Apropriado'
-            : resultado.justificativa || 'Inapropriado',
+          condicaoAtual: fraseResultado
         },
       }),
 
-      // B. Criar o log de Histórico
+      // Criar o log de Histórico
       prisma.historico.create({
         data: {
           operacao: 'CREATE',
           entidade: 'CARD',
-          entidadeId: 'Novo Card', // O ID real só existe após a criação
+          entidadeId: 'Novo Card', 
         },
       }),
     ]);
@@ -69,13 +78,10 @@ export class CardService {
     return cardSalvo;
   }
 
-  /**
-   * READ
-   * Lista todos os cards salvos.
-   */
+  //Lista todos os cards salvos.
+  
   async listarCards() {
     return prisma.card.findMany({
-      // Inclui a informação da atividade (o nome)
       include: {
         atividade: true,
       },
@@ -85,55 +91,54 @@ export class CardService {
     });
   }
   
-  /**
-   * READ (Atividades)
-   * Lista as atividades disponíveis para o frontend popular o <select>
-   */
+  // Lista as atividades disponíveis para o frontend
+   
   async listarAtividades() {
     return prisma.atividade.findMany();
   }
 
 
   async obterPrevisaoParaCard(id: string) {
-    // 1. Achar o card e sua atividade
+    // 1. Achar o card e a atividade
     const card = await prisma.card.findUnique({
       where: { id },
       include: { atividade: true },
     });
 
     if (!card) {
-      // O 'throw' será pego pelo controller
       throw new Error('Card não encontrado.');
     }
 
-    // 2. Buscar a previsão futura (usando o 'this' interno)
+    // 2. Buscar a previsão futura
     const previsoes = await this.weatherService.buscarPrevisaoFutura(
       card.cidade,
     );
 
     // 3. Aplicar a Estratégia em CADA dia da previsão
     const resultados = previsoes.map((dadosDia) => {
-      // Agora o service usa seus próprios sub-serviços
-      const resultadoEstrategia = this.climaService
-        .verificarClimaParaAtividade(
-          card.atividade.nome,
-          dadosDia,
-        );
+      
+      const frase = this.tradutorClima.processar(card.atividade.nome, {
+          temp: dadosDia.temperatura,
+          umidade: dadosDia.umidade,
+          vento: dadosDia.velocidadeVento,
+          chuva: dadosDia.probabilidadeChuva
+      });
       
       return {
-        data: dadosDia.data, // Acessamos diretamente (está na interface)
+        data: dadosDia.data,
         dadosClima: dadosDia,
-        resultado: resultadoEstrategia,
+        resultado: {
+            apropriado: true, 
+            justificativa: frase 
+        },
       };
     });
 
     return resultados;
   }
 
-  /**
-   * UPDATE
-   * Atualiza um card existente com novos dados do clima.
-   */
+  // Atualiza um card existente com novos dados do clima.
+   
   async atualizarCard(id: string) {
     // 1. Encontra o card e a atividade
     const cardAtual = await prisma.card.findUnique({
@@ -150,13 +155,15 @@ export class CardService {
       cardAtual.cidade,
     );
 
-    // 3. Re-avalia a estratégia
-    const resultado = this.climaService.verificarClimaParaAtividade(
-      cardAtual.atividade.nome,
-      dadosClima,
-    );
+    // 3. Faz a avaliação da estratégia com o Tradutor
+    const fraseResultado = this.tradutorClima.processar(cardAtual.atividade.nome, {
+        temp: dadosClima.temperatura,
+        umidade: dadosClima.umidade,
+        vento: dadosClima.velocidadeVento,
+        chuva: dadosClima.probabilidadeChuva
+    });
 
-    // 4. Atualiza o Card e loga no Histórico (Transação)
+    // 4. Atualiza o Card e loga no Histórico
     const [cardAtualizado] = await prisma.$transaction([
       prisma.card.update({
         where: { id },
@@ -166,9 +173,7 @@ export class CardService {
           umidade: dadosClima.umidade,
           velocidadeVento: dadosClima.velocidadeVento,
           precipitacaoProbabilidade: dadosClima.probabilidadeChuva,
-          condicaoAtual: resultado.apropriado
-            ? 'Apropriado'
-            : resultado.justificativa || 'Inapropriado',
+          condicaoAtual: fraseResultado
         },
       }),
       
@@ -184,13 +189,9 @@ export class CardService {
     return cardAtualizado;
   }
 
-  /**
-   * DELETE
-   * Remove um card do banco.
-   */
+  // Remove um card do banco.
+
   async deletarCard(id: string) {
-    // Usamos $transaction para garantir que o log só seja
-    // criado se a deleção funcionar.
     await prisma.$transaction([
       prisma.card.delete({
         where: { id },
