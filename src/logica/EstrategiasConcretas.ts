@@ -32,7 +32,7 @@ export class EstrategiaPiquenique implements IEstrategia {
         if (clima.vento > 20) {
             return "🌬️ Vento muito forte! Vai ser difícil segurar as toalhas.";
         }
-        if (clima.chuva > 10) {
+        if (clima.chuva > 40) {
             return "☔ Risco de chuva. Piquenique em local coberto seria melhor.";
         }
         return "🧺 O parque espera por você! Ótimo clima.";
