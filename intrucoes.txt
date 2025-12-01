@@ -65,3 +65,7 @@ Se tudo deu certo:
 3. O menu dropdown "Atividade" no site será preenchido
    automaticamente com "Correr", "Praia" e "Piquenique",
    confirmando a conexão com o backend.
+
+
+
+   commit
