@@ -282,9 +282,6 @@ async function handleAbrirModal(id, cidade, atividadeNome) {
       div.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h4 style="margin:0; font-size: 1.1em; color: #80D0C7;">📅 ${dataTexto}</h4>
-            <span class="card-condicao ${condicaoClasse}" style="margin:0; font-size: 0.8em; padding: 4px 10px;">
-                ${textoCondicao}
-            </span>
         </div>
 
         <ul class="card-info" style="border:none; padding: 0;">
