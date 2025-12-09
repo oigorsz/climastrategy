@@ -517,3 +517,99 @@ h2 {
   border-bottom: 1px solid rgba(255,255,255,0.1);
   padding-bottom: 15px;
 }
+
+/* === MODAL EXCLUSAO === */
+.modal-confirm-overlay {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  z-index: 100;
+  display: none;
+  position: fixed;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+  animation: fadeOverlay 0.25s ease-out;
+}
+
+.modal-confirm-content {
+  background: rgba(28, 34, 45, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 32px;
+  border-radius: 22px;
+  width: 90%;
+  max-width: 430px;
+  color: #f7f7f7;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255,255,255,0.05);
+  animation: popIn 0.28s ease-out;
+}
+
+.modal-confirm-content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.modal-confirm-content p {
+  font-size: 15px;
+  color: #dcdcdc;
+  margin-bottom: 22px;
+  line-height: 1.45;
+}
+
+.modal-confirm-buttons {
+  display: flex;
+  gap: 14px;
+}
+
+.modal-confirm-buttons button {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+#btnConfirmCancelar {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  backdrop-filter: blur(6px);
+}
+#btnConfirmCancelar:hover {
+  background: rgba(255,255,255,0.22);
+}
+
+#btnConfirmOk {
+  background: #0a84ff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(10,132,255,0.4);
+}
+#btnConfirmOk:hover {
+  background: #006fe0;
+}
+
+#btnConfirmOk:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+.modal-confirm-buttons button:active {
+  transform: scale(0.97);
+  opacity: 0.85;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes fadeOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

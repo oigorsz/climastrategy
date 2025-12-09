@@ -5,6 +5,7 @@ const API_URL = 'http://localhost:3000';
 let formBusca, selectAtividade, inputCidade, dashboardContainer, loadingMessage;
 let modalOverlay, modalContent, modalCloseBtn, modalTitulo, modalBody;
 let modalErro, modalContentErro, modalTituloErro, modalErroMensagem, modalErroFecharBtn;
+let modalConfirm, modalConfirmTitulo, modalConfirmMensagem, btnConfirmCancelar, btnConfirmOk;
 
 document.addEventListener('DOMContentLoaded', () => {
   formBusca = document.getElementById('form-busca');
@@ -22,6 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
   modalTituloErro = document.getElementById('modal-erro-titulo');
   modalErroMensagem = document.getElementById("modal-erro-mensagem");
   modalErroFecharBtn = document.getElementById("modal-erro-close");
+  modalConfirm = document.getElementById("modalConfirm");
+  modalConfirmTitulo = document.getElementById("modalConfirmTitulo");
+  modalConfirmMensagem = document.getElementById("modalConfirmMensagem");
+  btnConfirmCancelar = document.getElementById("bntConfirmCancelar");
+  btnConfirmOk = document.getElementById("bntConfirmOk");
 
   carregarAtividades();
   carregarCards();
@@ -120,7 +126,8 @@ async function handleCriarCard(e) {
 
 // Deletar Card
 async function handleExcluirCard(id) {
-  if (!confirm('Excluir este card?')) return;
+  const confirmar = await abrirConfimacao("Excluir card", "Tem certeza que deseja excluir este card?");
+  if (!confirmar) return;
   try {
     await fetch(`${API_URL}/cards/${id}`, { method: 'DELETE' });
     carregarCards();
@@ -306,4 +313,23 @@ function mostrarErroModal(cidadeBuscada) {
 
 function fecharErroModal() {
   modalErro.style.display = "none";
+}
+
+function abrirConfimacao(titulo, mensagem) {
+  return new Promise((resolve) => {
+    modalConfirmTitulo.textContent = titulo;
+    modalConfirmMensagem.textContent = mensagem;
+
+    modalConfirm.style.display = "flex";
+
+    btnConfirmCancelar.onclick = () => {
+      modalConfirm.style.display = "none";
+      resolve(false);
+    };
+
+    btnConfirmOk.onclick = () => {
+      modalConfirm.style.display = "none";
+      resolve(true);
+    };
+  });
 }
