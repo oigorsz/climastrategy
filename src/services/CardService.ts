@@ -47,7 +47,8 @@ export class CardService {
         temp: dadosClima.temperatura,
         umidade: dadosClima.umidade,
         vento: dadosClima.velocidadeVento,
-        chuva: dadosClima.probabilidadeChuva
+        chuva: dadosClima.probabilidadeChuva,
+        data: new Date().toISOString()
     });
 
     // 4. Salvar o Card e o Histórico em uma Transação
@@ -121,7 +122,8 @@ export class CardService {
           temp: dadosDia.temperatura,
           umidade: dadosDia.umidade,
           vento: dadosDia.velocidadeVento,
-          chuva: dadosDia.probabilidadeChuva
+          chuva: dadosDia.probabilidadeChuva,
+          data: dadosDia.data || new Date().toISOString()
       });
       
       return {
@@ -160,7 +162,8 @@ export class CardService {
         temp: dadosClima.temperatura,
         umidade: dadosClima.umidade,
         vento: dadosClima.velocidadeVento,
-        chuva: dadosClima.probabilidadeChuva
+        chuva: dadosClima.probabilidadeChuva,
+        data: new Date().toISOString()
     });
 
     // 4. Atualiza o Card e loga no Histórico
